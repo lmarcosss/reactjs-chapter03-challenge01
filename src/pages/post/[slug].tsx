@@ -5,13 +5,13 @@ import Head from 'next/head';
 import Prismic from '@prismicio/client';
 
 import { ptBR } from 'date-fns/locale';
+import { useRouter } from 'next/router';
 import { format } from 'date-fns';
 import { RichText } from 'prismic-dom';
 import styles from './post.module.scss';
 import commonStyles from '../../styles/common.module.scss';
 import Header from '../../components/Header';
 import { getPrismicClient } from '../../services/prismic';
-import { useRouter } from 'next/router';
 
 interface Post {
   first_publication_date: string | null;
@@ -40,6 +40,14 @@ export default function Post({ post }: PostProps): JSX.Element {
   if (router.isFallback) {
     return <div>Carregando...</div>;
   }
+
+  const readTime = Math.round(
+    post.data.content
+      .reduce((text, article) => {
+        return `${text} ${article.heading} ${RichText.asText(article.body)}`;
+      }, '')
+      .split(' ').length / 200
+  );
 
   return (
     <>
@@ -75,7 +83,7 @@ export default function Post({ post }: PostProps): JSX.Element {
 
           <div>
             <FiClock />
-            <span>4 min</span>
+            <span>{readTime} min</span>
           </div>
         </div>
         <article className={styles.article}>
@@ -84,6 +92,7 @@ export default function Post({ post }: PostProps): JSX.Element {
               <h2 className={styles.heading}>{item.heading}</h2>
               <div
                 className={styles.postContent}
+                /* eslint-disable */
                 dangerouslySetInnerHTML={{
                   __html: RichText.asHtml(item.body),
                 }}
@@ -121,13 +130,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { slug } = params;
 
   const prismic = getPrismicClient();
-  const response = await prismic.getByUID('post', String(slug), {});
-
-  const post = {
-    ...response,
-    title: response.data.title,
-    // content: RichText.asHtml(response.data.content),
-  };
+  const post = await prismic.getByUID('post', String(slug), {});
 
   return {
     props: {
