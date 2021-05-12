@@ -1,1 +1,35 @@
-// TODO
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.content {
+  max-width: 720px;
+  padding: 0 2rem;
+  margin: 3rem auto 0;
+}
+
+.iconsContainer {
+  margin-top: 20px;
+  margin-bottom: 40px;
+  display: flex;
+  flex-wrap: wrap;
+
+  div {
+    display: flex;
+    align-items: center;
+    padding-right: 30px;
+    padding-bottom: 10px;
+
+    time,
+    span {
+      font-size: 0.875rem;
+      color: var(--info);
+    }
+
+    svg {
+      margin-right: 5px;
+    }
+  }
+}

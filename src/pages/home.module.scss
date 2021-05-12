@@ -1,1 +1,39 @@
-// TODO
+.posts {
+  margin: 5rem auto 0;
+
+  img {
+    margin-bottom: 2rem;
+  }
+
+  a {
+    .title {
+      padding-bottom: 8px;
+      font-size: 1.75rem;
+      font-weight: 700;
+      transition: color 0.2s;
+    }
+
+    .subtitle {
+      font-size: 1.125rem;
+      color: var(--body);
+      font-weight: 400;
+    }
+
+    &:hover .title {
+      color: var(--highlight);
+    }
+  }
+
+  > button {
+    background: transparent;
+    border: none;
+    color: var(--highlight);
+    font-weight: 600;
+    font-size: 1.125rem;
+    transition: filter 0.2s;
+
+    &:hover {
+      filter: brightness(0.8);
+    }
+  }
+}
