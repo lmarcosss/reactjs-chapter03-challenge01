@@ -10,6 +10,7 @@ import { getPrismicClient } from '../services/prismic';
 
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
+import PreviewButton from '../components/PreviewButton';
 
 interface Post {
   uid?: string;
@@ -28,9 +29,13 @@ interface PostPagination {
 
 interface HomeProps {
   postsPagination: PostPagination;
+  preview: boolean;
 }
 
-export default function Home({ postsPagination }: HomeProps): JSX.Element {
+export default function Home({
+  postsPagination,
+  preview,
+}: HomeProps): JSX.Element {
   const [posts, setPosts] = useState(() => {
     if (postsPagination?.results) {
       return postsPagination.results;
@@ -91,21 +96,29 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
               Carregar mais posts
             </button>
           )}
+
+          <PreviewButton preview={preview} />
         </div>
       </main>
     </>
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({
+  preview = false,
+  previewData,
+}) => {
   const prismic = getPrismicClient();
 
   const postsPagination = await prismic.query(
     Prismic.Predicates.at('document.type', 'post'),
-    { fetch: [] }
+    {
+      ref: previewData?.ref ?? null,
+      orderings: '[document.first_publication_date desc]',
+    }
   );
 
   return {
-    props: { postsPagination },
+    props: { postsPagination, preview },
   };
 };
